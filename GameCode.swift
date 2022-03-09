@@ -1,5 +1,10 @@
 import Foundation
 let ball = OvalShape(width: 40, height: 40)
+
+// new variable to store the array
+
+var barriers: [Shape] = []
+
 /*
 The setup() function is called once when the app launches. Without it, your app won't compile.
 Use it to set up and start your app.
@@ -40,8 +45,15 @@ fileprivate func setupFunnel() {
 func setup() {
     setupBall()
     ball.onCollision = ballCollided(with:)
+
+// Make a bouncier ball ( the value can range from 0 to 1) - pg 246
+    ball.bounciness = 0.7
     
- // prevent the ball from dragging pg 242
+// reset the game - pg 245
+    
+    ball.onTapped = resetGame
+    
+// prevent the ball from dragging pg 242
     
     ball.isDraggable = false
     
@@ -50,8 +62,18 @@ func setup() {
     scene.trackShape(ball)
     ball.onExitedScene = ballExitedScene
     
+// callback of the scene to print a new position everytime the shape is moved - pg 247
+    
+    scene.onShapeMoved = printPosition(of:)
+    
+//  Add a call to reset game pg 245
+    
+    resetGame()
+    
     setupBarrier()
     
+// Tilt the Barrier - pg 246
+    barrier.angle = 0.1
     
     setupFunnel()
     ball.isDraggable = false
@@ -137,4 +159,17 @@ func ballExitedScene() {
 // unlock and lock the barrier - same in dropBall() pg 244
     
     barrier.isDraggable = true
+}
+
+// Resets the game by moving the ball below
+// the scene,which will unlock the barriers. pg 245
+
+func resetGame() {
+    ball.position = Point(x: 0, y: -80)
+}
+
+// A helper function to print a shape's position to the console - pg 247
+
+func printPosition(of shape: Shape) {
+    print(shape.position)
 }
