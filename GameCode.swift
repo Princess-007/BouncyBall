@@ -41,19 +41,36 @@ func setup() {
     setupBall()
     ball.onCollision = ballCollided(with:)
     
+ // prevent the ball from dragging pg 242
+    
+    ball.isDraggable = false
+    
+// This lets the scene know to keep track of the ball's location - pg 243
+    
+    scene.trackShape(ball)
+    ball.onExitedScene = ballExitedScene
+    
     setupBarrier()
     
     
     setupFunnel()
-   
+    ball.isDraggable = false
+    
 // Add a target to the scene - page 238.
     
     setupTarget()
     target.name = "target"
+    ball.isDraggable = false
 }
 
 func dropBall() {
     ball.position = funnel.position
+
+    // Stop the runaway Ball pg 242
+    ball.stopAllMotion()
+    
+    // unlock and lock the barrier - pg 244
+    barrier.isDraggable = false
 }
 
 
@@ -100,7 +117,7 @@ func setupTarget() {
     target.hasPhysics = true
     target.isImmobile = true
     target.isImpermeable = false
-    target.fillColor = .yellow
+    target.fillColor = .red
 
     scene.add(target)
 }
@@ -113,3 +130,11 @@ func ballCollided(with otherShape: Shape) {
     otherShape.fillColor = .green
 }
 
+// function to lock the barrier - pg 243
+
+func ballExitedScene() {
+
+// unlock and lock the barrier - same in dropBall() pg 244
+    
+    barrier.isDraggable = true
+}
